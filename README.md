@@ -21,8 +21,8 @@ Note:
 | 1024x1024  | RTX6000ADA | bfl codebase               | 1.74         |
 | 1024x1024  | RTX6000ADA | ❌ compile blocks & extras | 2.08         |
 | 1024x1024  | RTX6000ADA | ✅ compile blocks & extras | 2.8          |
-| 1024x1024  | H100       | ❌ compile blocks & extras | 6.1          |
-| 1024x1024  | H100       | ✅ compile blocks & extras | 11.5         |
+| 1024x1024  | H100       | ❌ compile blocks & extras | 6.1   (Re.Imp 4.95)       |
+| 1024x1024  | H100       | ✅ compile blocks & extras | 11.5  (Re.Imp 9.12)       |
 | 768x768    | RTX4090    | bfl codebase fp8 wo quant  | 2.32         |
 | 768x768    | RTX4090    | ❌ compile blocks & extras | 4.47         |
 | 768x768    | RTX4090    | ✅ compile blocks & extras | 6.2          |
