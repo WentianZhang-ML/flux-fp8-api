@@ -403,5 +403,10 @@ with open(f"output.jpg", "wb") as f:
 You can also generate an image by directly importing the FluxPipeline class and using it to generate an image. This is useful if you have a custom model configuration and want to generate an image without having to run the server.
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 python generate.py --config-path 'configs/config-dev-1-H100.json' --save-path '/jfs/wentian/flux_fp8_matmul_api/'
+CUDA_VISIBLE_DEVICES=0 python generate.py \
+--config-path 'configs/config-dev-1-H100ADA.json' \
+--save-path '/jfs/wentian/flux_fp8_matmul/' \
+--csv-path '/jfs/wentian/flux_fp8_matmul/' \
+--seed 13456 --batch-size 10 --width 1024 --height 1024 \
+--num-steps 25 --guidance 3.5 ;
 ```
