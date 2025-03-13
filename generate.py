@@ -6,16 +6,19 @@ import csv
 def parse_args():
     parser = argparse.ArgumentParser(description="Launch Flux API server")
     parser.add_argument(
-        "-c",
         "--config-path",
         type=str,
         help="Path to the configuration file, if not provided, the model will be loaded from the command line arguments",
     )
     parser.add_argument(
-        "-s",
         "--save-path",
         type=str,
-        help="Path to the configuration file, if not provided, the model will be loaded from the command line arguments",
+        help="Path to the saved generated images",
+    )
+    parser.add_argument(
+        "--csv-path",
+        type=str,
+        help="Path to the csv file containing <prompt, save_path> for each row",
     )
     parser.add_argument(
         "--seed",
@@ -29,22 +32,51 @@ def parse_args():
         default=1,
         help="Batch size",
     )
+    parser.add_argument(
+        "--width",
+        type=int,
+        default=1024,
+        help="width of images",
+    )
+    parser.add_argument(
+        "--height",
+        type=int,
+        default=1024,
+        help="height of images",
+    )
+    parser.add_argument(
+        "--num-steps",
+        type=int,
+        default=25,
+        help="number of steps for generation",
+    )
+    parser.add_argument(
+        "--guidance",
+        type=int,
+        default=3.5,
+        help="cfg guidance weight",
+    )
     return parser.parse_args()
 
 
 
 if __name__ == '__main__':
     args = parse_args()
+
     pipe = FluxPipeline.load_pipeline_from_config_path(
         args.config_path
     )
-    os.makedirs(args.save_path, exist_ok=True)
-
-    prompts =["A beautiful asian woman in traditional clothing with golden hairpin and blue eyes, wearing a red kimono with dragon patterns",
+    prompts =[
             "A beautiful asian woman in traditional clothing with golden hairpin and blue eyes, wearing a red kimono with dragon patterns",
-            "A beautiful asian woman in traditional clothing with golden hairpin and blue eyes, wearing a red kimono with dragon patterns"]
+            "A beautiful asian woman in traditional clothing with golden hairpin and blue eyes, wearing a red kimono with dragon patterns",
+            "A beautiful asian woman in traditional clothing with golden hairpin and blue eyes, wearing a red kimono with dragon patterns"
+            ]
 
-    csv_file = f"./prompt_flux_seed_{str(args.seed)}_meta.csv"
+    os.makedirs(args.save_path, exist_ok=True)
+    os.makedirs(args.csv_path, exist_ok=True)
+
+
+    csv_file = f"{args.csv_path}/prompt_flux_{args.width}x{args.height}_{args.num_steps}_{args.guidance}-seed_{str(args.seed)}_meta.csv"
     with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
 
@@ -53,10 +85,10 @@ if __name__ == '__main__':
             # Required args:
             prompt=prompt,
             # Optional args:
-            width=1024,
-            height=1024,
-            num_steps=25,
-            guidance=3.5,
+            width=args.width,
+            height=args.height,
+            num_steps=args.num_steps,
+            guidance=args.guidance,
             num_images=args.batch_size,
             seed=args.seed,
         )
