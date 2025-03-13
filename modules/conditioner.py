@@ -11,7 +11,7 @@ from transformers import (
 )
 from transformers.utils.quantization_config import QuantoConfig, BitsAndBytesConfig
 
-CACHE_DIR = os.environ.get("HF_HOME", "~/.cache/huggingface")
+# CACHE_DIR = os.environ.get("HF_HOME", "/jfs/wentian/hf_cache")
 
 
 def auto_quantization_config(
@@ -75,20 +75,22 @@ class HFEmbedder(nn.Module):
 
         if self.is_clip:
             self.tokenizer: CLIPTokenizer = CLIPTokenizer.from_pretrained(
-                version, max_length=max_length
+                version, max_length=max_length, cache_dir='/jfs/wentian/hf_cache'
             )
 
             self.hf_module: CLIPTextModel = CLIPTextModel.from_pretrained(
                 version,
+                cache_dir='/jfs/wentian/hf_cache',
                 **hf_kwargs,
             )
 
         else:
             self.tokenizer: T5Tokenizer = T5Tokenizer.from_pretrained(
-                version, max_length=max_length
+                version, max_length=max_length, cache_dir='/jfs/wentian/hf_cache'
             )
             self.hf_module: T5EncoderModel = T5EncoderModel.from_pretrained(
                 version,
+                cache_dir='/jfs/wentian/hf_cache',
                 **hf_kwargs,
             )
 
