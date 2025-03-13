@@ -151,6 +151,16 @@ To install the required dependencies, run:
 
 ```bash
 python -m pip install -r requirements.txt
+pip install optimum-quanto
+# Downgrade the triton version otherwise it will cause errors: SystemError: PY_SSIZE_T_CLEAN macro must be defined for '#' formats
+pip install --upgrade triton==3.1.0 
+```
+Download the Flux-Dev Checkpoint
+
+```bash
+from huggingface_hub import hf_hub_download
+hf_hub_download(repo_id='black-forest-labs/FLUX.1-dev',filename='ae.safetensors',local_dir='/jfs/wentian/flux')
+hf_hub_download(repo_id='Kijai/flux-fp8',filename='flux1-dev-fp8.safetensors',local_dir='/jfs/wentian/flux')
 ```
 
 If you get errors installing `torch-cublas-hgemm`, feel free to comment it out in requirements.txt, since it's not necessary, but will speed up inference for non-fp8 linear layers.
@@ -392,29 +402,6 @@ with open(f"output.jpg", "wb") as f:
 
 You can also generate an image by directly importing the FluxPipeline class and using it to generate an image. This is useful if you have a custom model configuration and want to generate an image without having to run the server.
 
-```py
-import io
-from flux_pipeline import FluxPipeline
-
-
-pipe = FluxPipeline.load_pipeline_from_config_path(
-    "configs/config-dev-offload-1-4090.json"  # or whatever your config is
-)
-
-output_jpeg_bytes: io.BytesIO = pipe.generate(
-    # Required args:
-    prompt="A beautiful asian woman in traditional clothing with golden hairpin and blue eyes, wearing a red kimono with dragon patterns",
-    # Optional args:
-    width=1024,
-    height=1024,
-    num_steps=20,
-    guidance=3.5,
-    seed=13456,
-    init_image="path/to/your/init_image.jpg",
-    strength=0.8,
-)
-
-with open("output.jpg", "wb") as f:
-    f.write(output_jpeg_bytes.getvalue())
-
+```bash
+CUDA_VISIBLE_DEVICES=0 python generate.py --config-path 'configs/config-dev-1-H100.json' --save-path '/jfs/wentian/flux_fp8_matmul_api/'
 ```
