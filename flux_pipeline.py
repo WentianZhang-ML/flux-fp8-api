@@ -377,7 +377,7 @@ class FluxPipeline:
         num_images = x.shape[0]
         images: List[torch.Tensor] = []
         for i in range(num_images):
-            x = (
+            img = (
                 x[i]
                 .clamp(-1, 1)
                 .add(1.0)
@@ -386,13 +386,13 @@ class FluxPipeline:
                 .contiguous()
                 .type(torch.uint8)
             )
-            images.append(x)
+            images.append(img)
+
         if len(images) == 1:
             im = images[0]
+            im = [self.img_encoder.encode_torch(im, quality=jpeg_quality)]
         else:
-            im = torch.vstack(images)
-
-        im = self.img_encoder.encode_torch(im, quality=jpeg_quality)
+            im = [self.img_encoder.encode_torch(image, quality=jpeg_quality) for image in images]
         images.clear()
         return im
 
