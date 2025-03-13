@@ -52,7 +52,7 @@ def parse_args():
     )
     parser.add_argument(
         "--guidance",
-        type=int,
+        type=float,
         default=3.5,
         help="cfg guidance weight",
     )
