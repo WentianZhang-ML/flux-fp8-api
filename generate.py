@@ -54,7 +54,7 @@ def parse_args():
         "--guidance",
         type=float,
         default=3.5,
-        help="cfg guidance weight",
+        help="cfg guidance scale",
     )
     return parser.parse_args()
 
