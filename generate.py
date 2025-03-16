@@ -3,6 +3,8 @@ import os
 from flux_pipeline import FluxPipeline
 import argparse
 import csv
+import random
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Launch Flux API server")
     parser.add_argument(
@@ -59,6 +61,25 @@ def parse_args():
     return parser.parse_args()
 
 
+def random_aspect_ratio(resolution=1024):
+    aspect_ratios = [ 
+            (1,1), 
+            (4,3), 
+            (3,2), 
+            (16,9), 
+            (16,10),
+            (21,9),
+            (9,16),
+            (2,3),
+            (5,4)
+    ]
+    
+    ratio = random.choice(aspect_ratios)
+    width = resolution
+    height = int(width / (ratio[0]/ratio[1]))
+
+    return width, height
+
 
 if __name__ == '__main__':
     args = parse_args()
@@ -75,18 +96,20 @@ if __name__ == '__main__':
     os.makedirs(args.save_path, exist_ok=True)
     os.makedirs(args.csv_path, exist_ok=True)
 
-
     csv_file = f"{args.csv_path}/prompt_flux_{args.width}x{args.height}_{args.num_steps}_{args.guidance}-seed_{str(args.seed)}_meta.csv"
     with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
 
     for i, prompt in enumerate(prompts):
+        
+        width, height = random_aspect_ratio(resolution=args.width)
+
         output_jpeg_bytes: io.BytesIO = pipe.generate(
             # Required args:
             prompt=prompt,
             # Optional args:
-            width=args.width,
-            height=args.height,
+            width=width,
+            height=height,
             num_steps=args.num_steps,
             guidance=args.guidance,
             num_images=args.batch_size,
